@@ -61,7 +61,7 @@ public class PsCleaner extends ProcCleaner {
     @Override
     public void clean(CleanRequest request) throws IOException, InterruptedException {
         if(switchedOff) {
-            request.getListener().getLogger().println("Process cleanup is globally turned off, contact your Jenkins administartor to turn it on.");
+            request.getListener().getLogger().println("Process cleanup is globally turned off, contact your Jenkins administrator to turn it on.");
             return;
         }
 
