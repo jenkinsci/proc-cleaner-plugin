@@ -1,45 +1,45 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.jenkins-ci.plugins</groupId>
-		<artifactId>plugin</artifactId>
-		<version>1.480</version>
-	</parent>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.jenkins-ci.plugins</groupId>
+        <artifactId>plugin</artifactId>
+        <version>1.480</version>
+    </parent>
 
-	<groupId>org.jenkinsci.plugins.proccleaner</groupId>
-	<artifactId>proc-cleaner-plugin</artifactId>
-	<version>1.1-SNAPSHOT</version>
-	<packaging>hpi</packaging>
-	<name>Process cleaner</name>
-        <description>Kill running processes before and after build.</description>
-        <url>http://wiki.jenkins-ci.org/display/JENKINS/Process+Cleaner+Plugin</url>
-	
-	<scm>
-                <connection>scm:git:git://github.com/jenkinsci/proc-cleaner-plugin.git</connection>
-                <developerConnection>scm:git:git@github.com:jenkinsci/proc-cleaner-plugin.git</developerConnection>
-                <url>https://github.com/jenkinsci/proc-cleaner-plugin</url>
-        </scm>
+    <artifactId>proc-cleaner-plugin</artifactId>
+    <packaging>hpi</packaging>
+    <name>Process cleaner</name>
+    <version>1.1-SNAPSHOT</version>
+    <description>Kill running processes before and after build.</description>
+    <url>http://wiki.jenkins-ci.org/display/JENKINS/Process+Cleaner+Plugin</url>
 
-	<repositories>
-		<repository>
-			<id>repo.jenkins-ci.org</id>
-			<url>http://repo.jenkins-ci.org/public/</url>
-		</repository>
-	</repositories>
+    <scm>
+        <connection>scm:git:git://github.com/jenkinsci/proc-cleaner-plugin.git</connection>
+        <developerConnection>scm:git:git@github.com:jenkinsci/proc-cleaner-plugin.git</developerConnection>
+        <url>https://github.com/jenkinsci/proc-cleaner-plugin</url>
+    </scm>
 
-	<pluginRepositories>
-		<pluginRepository>
-			<id>repo.jenkins-ci.org</id>
-			<url>http://repo.jenkins-ci.org/public/</url>
-		</pluginRepository>
-	</pluginRepositories>
+    <repositories>
+        <repository>
+            <id>repo.jenkins-ci.org</id>
+            <url>http://repo.jenkins-ci.org/public/</url>
+        </repository>
+    </repositories>
 
-        <dependencies>
-                <dependency>
-                        <groupId>org.mockito</groupId>
-                        <artifactId>mockito-core</artifactId>
-                        <version>1.8.5</version>
-                        <scope>test</scope>
-                </dependency>
-        </dependencies>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>repo.jenkins-ci.org</id>
+            <url>http://repo.jenkins-ci.org/public/</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>1.8.5</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>
