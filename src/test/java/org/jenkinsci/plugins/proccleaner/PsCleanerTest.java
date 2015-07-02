@@ -74,14 +74,14 @@ public class PsCleanerTest {
         Util.setPreProcCleaner(job, new PsCleaner("org.jenkinsci.plugins.proccleaner.PsAllKiller"));
 
         FreeStyleBuild build = job.scheduleBuild2(0).get();
-        assertTrue(build.getLog(), build.getLog().contains("Process cleanup is globally turned off, contact your Jenkins administartor to turn it on."));
+        assertTrue(build.getLog(), build.getLog().contains("Process cleanup is globally turned off, contact your Jenkins administrator to turn it on."));
 
         job = j.createFreeStyleProject();
         job.setAssignedNode(slave);
         Util.setPostProcCleaner(job, new PsCleaner("org.jenkinsci.plugins.proccleaner.PsAllKiller"));
 
         build = job.scheduleBuild2(0).get();
-        assertTrue(build.getLog(), build.getLog().contains("Process cleanup is globally turned off, contact your Jenkins administartor to turn it on."));
+        assertTrue(build.getLog(), build.getLog().contains("Process cleanup is globally turned off, contact your Jenkins administrator to turn it on."));
     }
 
     @Test public void runCleanup() throws Exception {
