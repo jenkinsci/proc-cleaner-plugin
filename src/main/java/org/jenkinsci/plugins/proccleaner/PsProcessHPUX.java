@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2013 Red Hat, Inc.
+ * Copyright (c) 2015 Red Hat, Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,22 +23,35 @@
  */
 package org.jenkinsci.plugins.proccleaner;
 
-import hudson.Functions;
+import java.io.BufferedReader;
+import java.util.logging.Logger;
 
 /**
- * Author: psrna, pjanouse
- * Date: 8/2/13
+ * Author: pjanouse
+ * Date: 2015/07/07
  */
-public class PsBasedProcessTreeFactory {
+public class PsProcessHPUX extends PsProcess{
 
-    public static PsBasedProcessTree createPsBasedProcessTree() {
+    public PsProcessHPUX(int pid, int ppid, String args, PsBasedProcessTree ptree) {
+        super(pid, ppid, args, ptree);
+    }
 
-        if (Functions.isWindows()) {
-            return new PsBasedWinProcessTree();
-        } else if (ProcCleaner.getOsName().contains("hp-ux")) {
-            return new PsBasedHPUXProcessTree();
-        } else {
-            return new PsBasedUnixProcessTree();
+    @Override
+    public void kill(int signum) {
+        // jna doesn't support HP-UX yet
+        //LIBC.kill(super.getPid(), signum);
+        try {
+            String[] cmd = {"kill", "-" + signum, ((Integer) getPid()).toString()};
+            BufferedReader reader;
+            ProcessBuilder pb = new ProcessBuilder(cmd);
+            pb.redirectErrorStream(true);
+            Process proc = pb.start();
+            proc.waitFor();
+        } catch(Exception e) {
+            LOGGER.warning("Unexpected exception occurred during killing process with PID: " + getPid() + " [" + e + "]");
         }
     }
+
+    private static final Logger LOGGER = Logger.getLogger(PsBasedHPUXProcessTree.class.getName());
+
 }

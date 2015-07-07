@@ -31,11 +31,13 @@ import hudson.Functions;
  */
 public class PsProcessFactory {
 
-    public static PsProcess createPsProcess(int pid, int ppid, String args, PsBasedProcessTree ptree){
+    public static PsProcess createPsProcess(int pid, int ppid, String args, PsBasedProcessTree ptree) {
 
-        if(Functions.isWindows()){
+        if (Functions.isWindows()) {
             return new PsProcessWin(pid, ppid, args, ptree);
-        }else{
+        } else if (ProcCleaner.getOsName().contains("hp-ux")) {
+            return new PsProcessHPUX(pid, ppid, args, ptree);
+        } else {
             return new PsProcessUnix(pid, ppid, args, ptree);
         }
     }
