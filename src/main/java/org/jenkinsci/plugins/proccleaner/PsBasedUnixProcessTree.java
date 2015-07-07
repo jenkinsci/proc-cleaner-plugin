@@ -26,6 +26,7 @@ package org.jenkinsci.plugins.proccleaner;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.logging.Logger;
 
 /**
  * Author: psrna
@@ -43,8 +44,12 @@ public class PsBasedUnixProcessTree extends PsBasedProcessTree {
         proc.waitFor();
         PsBasedProcessTree ptree = new PsBasedUnixProcessTree();
         String line = reader.readLine(); // first line should be "PID  PPID COMMAND" - skip it
+        if(!line.matches("^\\s*PID\\s*PPID\\s*COMMAND\\s*$"))
+            return null;
         while((line = reader.readLine()) != null)
             ptree.addProcess(line);
         return ptree;
     }
+
+    private static final Logger logger = Logger.getLogger(PsBasedUnixProcessTree.class.getName());
 }

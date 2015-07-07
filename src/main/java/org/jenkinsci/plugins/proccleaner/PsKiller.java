@@ -29,6 +29,7 @@ import hudson.ExtensionPoint;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.Serializable;
+import java.util.logging.Logger;
 
 import jenkins.model.Jenkins;
 
@@ -37,15 +38,24 @@ public abstract class PsKiller implements ExtensionPoint, Serializable {
     public void kill(String user) throws InterruptedException, IOException {
         PsBasedProcessTree ptree = PsBasedProcessTreeFactory.createPsBasedProcessTree().createProcessTreeFor(user);
         int me = ProcCleaner.getpid();
-        doKill(ptree, me);
+        if(ptree != null) {
+            doKill(ptree, me);
+        } else {
+            logger.warning("Unsupported output of 'ps' command, process cleanup doesn't have an effect!");
+        }
     }
 
     public void kill(String user, PrintStream log) throws InterruptedException, IOException {
         PsBasedProcessTree ptree = PsBasedProcessTreeFactory.createPsBasedProcessTree().createProcessTreeFor(user);
-        System.out.println("Process tree: " + ptree.toString());
-        ptree.setLog(log);
-        int me = ProcCleaner.getpid();
-        doKill(ptree, me);
+        if(ptree != null) {
+            System.out.println("Process tree: " + ptree.toString());
+            ptree.setLog(log);
+            int me = ProcCleaner.getpid();
+            doKill(ptree, me);
+        } else {
+            logger.warning("Unsupported output of 'ps' command, process cleanup doesn't have an effect!");
+            log.println("WARNING: Unsupported output of 'ps' command, process cleanup doesn't have an effect!");
+        }
     }
 
     protected abstract void doKill(PsBasedProcessTree ptree, int me);
@@ -57,4 +67,6 @@ public abstract class PsKiller implements ExtensionPoint, Serializable {
     }
 
     private static final long serialVersionUID = 1L;
+
+    private static final Logger logger = Logger.getLogger(PsBasedUnixProcessTree.class.getName());
 }
