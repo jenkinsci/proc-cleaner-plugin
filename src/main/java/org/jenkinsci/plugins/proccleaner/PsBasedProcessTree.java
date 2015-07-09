@@ -23,6 +23,7 @@
  */
 package org.jenkinsci.plugins.proccleaner;
 
+import javax.annotation.CheckForNull;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -85,6 +86,7 @@ public abstract class PsBasedProcessTree {
         return sb.toString();
     }
 
+    @CheckForNull
     public abstract PsBasedProcessTree createProcessTreeFor(String user) throws InterruptedException, IOException;
 
     /*
