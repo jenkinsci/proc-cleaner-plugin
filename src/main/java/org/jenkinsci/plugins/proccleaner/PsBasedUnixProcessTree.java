@@ -50,6 +50,4 @@ public class PsBasedUnixProcessTree extends PsBasedProcessTree {
             ptree.addProcess(line);
         return ptree;
     }
-
-    private static final Logger logger = Logger.getLogger(PsBasedUnixProcessTree.class.getName());
 }
