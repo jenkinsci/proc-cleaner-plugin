@@ -47,7 +47,6 @@ public class PsBasedHPUXProcessTree extends PsBasedProcessTree {
         if (!line.matches("^\\s*UID\\s*PID\\s*PPID\\s*C\\s*STIME\\s*TTY\\s*TIME\\s*COMMAND\\s*$")) {
             return null;
         }
-        boolean unsupported_ps = false;
         while ((line = reader.readLine()) != null) {
             String[] ps = line.trim().split(" +", 8);
             if (ps.length < 8)

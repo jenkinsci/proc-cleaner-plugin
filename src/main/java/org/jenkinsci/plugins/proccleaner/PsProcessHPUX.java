@@ -23,7 +23,6 @@
  */
 package org.jenkinsci.plugins.proccleaner;
 
-import java.io.BufferedReader;
 import java.util.logging.Logger;
 
 /**
@@ -42,7 +41,6 @@ public class PsProcessHPUX extends PsProcess{
         //LIBC.kill(super.getPid(), signum);
         try {
             String[] cmd = {"kill", "-" + signum, ((Integer) getPid()).toString()};
-            BufferedReader reader;
             ProcessBuilder pb = new ProcessBuilder(cmd);
             pb.redirectErrorStream(true);
             Process proc = pb.start();
