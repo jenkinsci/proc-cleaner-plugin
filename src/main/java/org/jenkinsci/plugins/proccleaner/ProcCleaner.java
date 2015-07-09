@@ -64,12 +64,7 @@ public abstract class ProcCleaner implements Describable<ProcCleaner>, Extension
      * @return OS name with lowered cases
      */
     public static String getOsName() {
-        String os = System.getProperty("os.name", "");
-
-        if (os.length() > 0)
-            os = os.toLowerCase();
-
-        return os;
+        return System.getProperty("os.name", "").toLowerCase();
     }
 
     /**
