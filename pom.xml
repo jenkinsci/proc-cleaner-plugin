@@ -3,7 +3,7 @@
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>1.480</version>
+        <version>1.596</version>
     </parent>
 
     <artifactId>proc-cleaner-plugin</artifactId>
@@ -18,7 +18,7 @@
         <developerConnection>scm:git:git@github.com:jenkinsci/proc-cleaner-plugin.git</developerConnection>
         <url>https://github.com/jenkinsci/proc-cleaner-plugin</url>
       <tag>HEAD</tag>
-  </scm>
+    </scm>
 
     <repositories>
         <repository>
@@ -34,12 +34,23 @@
         </pluginRepository>
     </pluginRepositories>
 
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <surefire.useFile>false</surefire.useFile>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
             <version>1.8.5</version>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jenkins-ci.plugins</groupId>
+            <artifactId>matrix-project</artifactId>
+            <version>1.4.1</version>
         </dependency>
     </dependencies>
 </project>
