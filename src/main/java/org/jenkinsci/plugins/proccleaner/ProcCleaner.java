@@ -44,6 +44,8 @@ import java.io.Serializable;
 import java.lang.management.ManagementFactory;
 
 import jenkins.model.Jenkins;
+import jenkins.security.Roles;
+import org.jenkinsci.remoting.RoleChecker;
 
 public abstract class ProcCleaner implements Describable<ProcCleaner>, ExtensionPoint, Serializable {
 
@@ -125,6 +127,10 @@ public abstract class ProcCleaner implements Describable<ProcCleaner>, Extension
 
         public BuildListener getListener() {
             return listener;
+        }
+
+        @Override
+        public void checkRoles(RoleChecker checker) throws SecurityException {
         }
     }
 
