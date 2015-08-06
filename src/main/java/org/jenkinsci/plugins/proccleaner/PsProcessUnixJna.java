@@ -29,9 +29,9 @@ import static hudson.util.jna.GNUCLibrary.LIBC;
  * Author: psrna
  * Date: 8/2/13
  */
-public class PsProcessUnix extends PsProcess{
+public class PsProcessUnixJna extends PsProcess{
 
-    public PsProcessUnix(int pid, int ppid, String args, PsBasedProcessTree ptree) {
+    public PsProcessUnixJna(int pid, int ppid, String args, PsBasedProcessTree ptree) {
         super(pid, ppid, args, ptree);
     }
 

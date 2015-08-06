@@ -29,16 +29,14 @@ import java.util.logging.Logger;
  * Author: pjanouse
  * Date: 2015/07/07
  */
-public class PsProcessHPUX extends PsProcess{
+public class PsProcessUnixLegacy extends PsProcess{
 
-    public PsProcessHPUX(int pid, int ppid, String args, PsBasedProcessTree ptree) {
+    public PsProcessUnixLegacy(int pid, int ppid, String args, PsBasedProcessTree ptree) {
         super(pid, ppid, args, ptree);
     }
 
     @Override
     public void kill(int signum) {
-        // jna doesn't support HP-UX yet
-        //LIBC.kill(super.getPid(), signum);
         try {
             String[] cmd = {"kill", "-" + signum, ((Integer) getPid()).toString()};
             ProcessBuilder pb = new ProcessBuilder(cmd);

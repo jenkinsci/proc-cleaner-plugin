@@ -45,12 +45,13 @@ import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
 import hudson.model.FreeStyleProject;
 import hudson.slaves.DumbSlave;
-import hudson.tasks.Shell;
 import hudson.util.ArgumentListBuilder;
 import hudson.util.OneShotEvent;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.logging.Logger;
 
 import hudson.util.StreamTaskListener;
@@ -62,11 +63,12 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
+import org.jvnet.hudson.test.MyJenkinsRule;
 import org.jvnet.hudson.test.TestBuilder;
 
 public class PsCleanerTest {
 
-    @Rule public JenkinsRule j = new JenkinsRule();
+    @Rule public MyJenkinsRule j = new MyJenkinsRule();
     private PsCleaner preCleaner;
     private PsCleaner postCleaner;
 
@@ -137,8 +139,13 @@ public class PsCleanerTest {
         verify(postCleaner, never()).clean(any(ProcCleaner.CleanRequest.class));
 
         if(p[0] != null && p[0].isAlive()) {
-            p[0].kill();
-            assertFalse("Long running process is still alive!", p[0].isAlive());
+            try {
+                p[0].kill();
+            } catch (Exception e) {
+                e.toString();
+                // Ignore any issue
+            }
+              assertFalse("Long running process is still alive!", p[0].isAlive());
         }
     }
 
@@ -187,18 +194,29 @@ public class PsCleanerTest {
         Util.setPostProcCleaner(job, new PsCleaner("org.jenkinsci.plugins.proccleaner.PsRecursiveKiller"));
 
         // Execute a job
-        FreeStyleBuild build = job.scheduleBuild2(0).get();
+        FreeStyleBuild build = null;
+        try {
+            build = job.scheduleBuild2(0).get();
+        } catch (Exception e) {}
 
         assertNotNull("Long running process wasn't started!", p[0]);
 
+        LOGGER.info("Job log: " + getLogAsString(build));
+
         boolean status;
         if (p[0] != null && (status = p[0].isAlive())) {
-            p[0].kill();
-            assertFalse("Long running process is still alive!", status);
+            try {
+                p[0].kill();
+            } catch (Exception e) {
+                e.toString();
+                // Ignore any issue
+            }
+
+            assertFalse("Long running process is still alive!", p[0].isAlive());
         }
 
         assertTrue("Killing of long running process wasn't performed by Process cleanup, plug-in doesn't have an effect on the target platform!",
-                getLogAsString(build).matches("(?s).*Killing Process PID = .*, PPID = .*, ARGS = .*org\\.jenkinsci\\.plugins\\.proccleaner\\.Sleeper Hello.*"));
+                getLogAsString(build).matches("(?s).*Killing Process PID = .*, PPID = .*, ARGS = .*java.* -cp target/test-classes/.*"));
     }
 
     private static final class BlockingCleaner extends PsCleaner {
