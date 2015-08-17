@@ -35,10 +35,10 @@ public class PsProcessFactory {
 
         if (Functions.isWindows()) {
             return new PsProcessWin(pid, ppid, args, ptree);
-        } else if (ProcCleaner.getOsName().contains("hp-ux")) {
-            return new PsProcessHPUX(pid, ppid, args, ptree);
+        } else if (ProcCleaner.isJnaSupported()) {
+            return new PsProcessUnixJna(pid, ppid, args, ptree);
         } else {
-            return new PsProcessUnix(pid, ppid, args, ptree);
+            return new PsProcessUnixLegacy(pid, ppid, args, ptree);
         }
     }
 }

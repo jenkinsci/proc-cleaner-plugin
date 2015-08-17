@@ -23,6 +23,7 @@
  */
 package org.jenkinsci.plugins.proccleaner;
 
+import com.sun.jna.Platform;
 import hudson.DescriptorExtensionList;
 import hudson.ExtensionList;
 import hudson.ExtensionPoint;
@@ -174,6 +175,11 @@ public abstract class ProcCleaner implements Describable<ProcCleaner>, Extension
         return Jenkins.getInstance().<ProcCleaner,Descriptor<ProcCleaner>>getDescriptorList(ProcCleaner.class);
     }
 
+    public static boolean isJnaSupported() {
+        return (Platform.isLinux() && Platform.isIntel()) || (Platform.isWindows() && Platform.isIntel())
+                || (Platform.isSolaris() && !(System.getProperty("os.version").compareTo("5.9") == 0)) ? true : false;
+    }
+
     public static class ProcCleanerDescriptor extends Descriptor<ProcCleaner> {
 
         protected ProcCleanerDescriptor(Class<? extends ProcCleaner> clazz) {
@@ -188,4 +194,5 @@ public abstract class ProcCleaner implements Describable<ProcCleaner>, Extension
             return clazz.getSimpleName();
         }
     }
+
 }

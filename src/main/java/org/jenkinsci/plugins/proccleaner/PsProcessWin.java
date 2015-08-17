@@ -39,7 +39,7 @@ public class PsProcessWin extends PsProcess {
     public void kill(int signum) {
 
         try {
-            Runtime.getRuntime().exec("cmd.exe /c \"taskkill /F /PID " + super.getPid() + "\"");
+            Runtime.getRuntime().exec("cmd.exe /c \"taskkill /F /PID " + super.getPid() + "\"").getOutputStream().close();
         } catch (IOException e) {
             e.printStackTrace();
         }

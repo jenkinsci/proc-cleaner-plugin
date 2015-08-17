@@ -54,6 +54,7 @@ public class WMICProcess {
         Process process = null;
         try {
             process = Runtime.getRuntime().exec(cmd);
+            process.getOutputStream().close();
             BufferedReader stdin = new BufferedReader((new InputStreamReader(process.getInputStream())));
             String s = stdin.readLine(); //skip first line - it's parentprocessid label
             while((s = stdin.readLine()) != null){
@@ -78,6 +79,7 @@ public class WMICProcess {
         Process process = null;
         try {
             process = Runtime.getRuntime().exec(cmd);
+            process.getOutputStream().close();
             BufferedReader stdin = new BufferedReader((new InputStreamReader(process.getInputStream())));
             String s = stdin.readLine(); //skip first line - it's caption and commandline label
             while((s = stdin.readLine()) != null){
@@ -104,6 +106,7 @@ public class WMICProcess {
             Process process = Runtime.getRuntime().exec(cmd);
 
             // Get input stream
+            process.getOutputStream().close();
             BufferedReader stdin = new BufferedReader(new InputStreamReader(process.getInputStream()));
 
             // Read and parse command standard output

@@ -69,8 +69,10 @@ public class PsCleaner extends ProcCleaner {
             killer.kill(username, request.getListener().getLogger());
         } catch(IOException e) {
             e.printStackTrace();
+            throw e;
         } catch(InterruptedException e) {
             e.printStackTrace();
+            throw e;
         }
     }
 
