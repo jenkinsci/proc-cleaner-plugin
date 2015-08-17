@@ -178,7 +178,8 @@ public abstract class ProcCleaner implements Describable<ProcCleaner>, Extension
     }
 
     public static boolean isJnaSupported() {
-        return (Platform.isLinux() && Platform.isIntel()) || (Platform.isWindows() && Platform.isIntel()) || Platform.isSolaris() ? true : false;
+        return (Platform.isLinux() && Platform.isIntel()) || (Platform.isWindows() && Platform.isIntel())
+                || (Platform.isSolaris() && !(System.getProperty("os.version").compareTo("5.9") == 0)) ? true : false;
     }
 
     public static class ProcCleanerDescriptor extends Descriptor<ProcCleaner> {
