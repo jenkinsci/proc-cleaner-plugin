@@ -82,7 +82,6 @@ public class PsCleanerTest {
 
         PsCleanerDescriptor descriptor = j.jenkins.getDescriptorByType(PsCleaner.PsCleanerDescriptor.class);
         descriptor.setSwitchedOff(true);
-        descriptor.setUsername("I_am_close_to_certain_there_is_no_such_user");
         LOGGER.info("Switched off " + descriptor.isSwitchedOff());
 
         FreeStyleProject job = j.createFreeStyleProject();
@@ -188,7 +187,6 @@ public class PsCleanerTest {
 
         // Configure plugin
         PsCleanerDescriptor descriptor = j.jenkins.getDescriptorByType(PsCleaner.PsCleanerDescriptor.class);
-        descriptor.setUsername(System.getProperty("user.name", ""));
 
         // Attach PostBuildStep and configure it properly
         Util.setPostProcCleaner(job, new PsCleaner("org.jenkinsci.plugins.proccleaner.PsRecursiveKiller"));

@@ -84,7 +84,6 @@ public class PsCleaner extends ProcCleaner {
     @Extension
     public static class PsCleanerDescriptor extends ProcCleanerDescriptor {
 
-        private String username;
         private boolean switchedOff;
 
         public PsCleanerDescriptor() {
@@ -92,7 +91,7 @@ public class PsCleaner extends ProcCleaner {
         }
 
         public String getUsername() {
-            return username;
+            return System.getProperty("user.name", "");
         }
 
         public boolean isSwitchedOff() {
@@ -106,7 +105,6 @@ public class PsCleaner extends ProcCleaner {
 
         @Override
         public boolean configure(StaplerRequest req, JSONObject json) {
-            username = json.getString("username");
             switchedOff = json.getBoolean("switchedOff");
             save();
             return true;
@@ -116,8 +114,5 @@ public class PsCleaner extends ProcCleaner {
             switchedOff = value;
         }
 
-        /*package*/ void setUsername(String username) {
-            this.username = username;
-        }
     }
 }
