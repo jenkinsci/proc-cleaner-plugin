@@ -578,7 +578,7 @@ public class MyJenkinsRule implements TestRule, MethodRule, RootAction {
         mvn.copyFrom(MyJenkinsRule.class.getClassLoader().getResource(mavenVersion + "-bin.zip"));
         mvn.unzip(new FilePath(buildDirectory));
         // TODO: switch to tar that preserves file permissions more easily
-        if(ProcCleaner.isJnaSupported() && !Functions.isWindows())
+        if(isJnaWorking() && !Functions.isWindows())
             GNUCLibrary.LIBC.chmod(new File(mvnHome, "bin/mvn").getPath(),0755);
 
         Maven.MavenInstallation mavenInstallation = new Maven.MavenInstallation("default",
@@ -602,7 +602,7 @@ public class MyJenkinsRule implements TestRule, MethodRule, RootAction {
             File antHome = createTmpDir();
             ant.unzip(new FilePath(antHome));
             // TODO: switch to tar that preserves file permissions more easily
-            if(ProcCleaner.isJnaSupported() && !Functions.isWindows())
+            if(isJnaWorking() && !Functions.isWindows())
                 GNUCLibrary.LIBC.chmod(new File(antHome,"apache-ant-1.8.1/bin/ant").getPath(),0755);
 
             antInstallation = new Ant.AntInstallation("default", new File(antHome,"apache-ant-1.8.1").getAbsolutePath(),NO_PROPERTIES);
@@ -2128,7 +2128,7 @@ public class MyJenkinsRule implements TestRule, MethodRule, RootAction {
         // this also prevents tests from falsely advertising Hudson
         DNSMultiCast.disabled = true;
 
-        if (ProcCleaner.isJnaSupported() && !Functions.isWindows()) {
+        if (isJnaWorking() && !Functions.isWindows()) {
             try {
                 GNUCLibrary.LIBC.unsetenv("MAVEN_OPTS");
                 GNUCLibrary.LIBC.unsetenv("MAVEN_DEBUG_OPTS");
@@ -2173,6 +2173,11 @@ public class MyJenkinsRule implements TestRule, MethodRule, RootAction {
 
     public Description getTestDescription() {
         return testDescription;
+    }
+
+    private static boolean isJnaWorking() {
+        return (Platform.isLinux() && Platform.isIntel()) || (Platform.isWindows() && Platform.isIntel())
+                || (Platform.isSolaris() && !(System.getProperty("os.version").compareTo("5.9") == 0)) ? true : false;
     }
 
     public static final List<String> PLUGIN_GROUPIDS = new ArrayList<String>(Arrays.asList("org.jvnet.hudson.plugins", "org.jvnet.hudson.main"));

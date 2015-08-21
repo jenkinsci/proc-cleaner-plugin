@@ -23,6 +23,7 @@
  */
 package org.jenkinsci.plugins.proccleaner;
 
+import com.sun.jna.Platform;
 import hudson.Functions;
 
 /**
@@ -31,11 +32,16 @@ import hudson.Functions;
  */
 public class PsProcessFactory {
 
+    private static boolean isJnaWorking() {
+        return (Platform.isLinux() && Platform.isIntel()) || (Platform.isWindows() && Platform.isIntel())
+                || (Platform.isSolaris() && !(System.getProperty("os.version").compareTo("5.9") == 0)) ? true : false;
+    }
+
     public static PsProcess createPsProcess(int pid, int ppid, String args, PsBasedProcessTree ptree) {
 
         if (Functions.isWindows()) {
             return new PsProcessWin(pid, ppid, args, ptree);
-        } else if (ProcCleaner.isJnaSupported()) {
+        } else if (isJnaWorking()) {
             return new PsProcessUnixJna(pid, ppid, args, ptree);
         } else {
             return new PsProcessUnixLegacy(pid, ppid, args, ptree);

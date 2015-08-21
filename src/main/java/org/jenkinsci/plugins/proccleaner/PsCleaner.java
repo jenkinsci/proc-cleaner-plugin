@@ -39,7 +39,6 @@ public class PsCleaner extends ProcCleaner {
 
     private final String killerType;
     private final PsKiller killer;
-    private String username;
     private boolean switchedOff;
 
     @DataBoundConstructor
@@ -54,7 +53,6 @@ public class PsCleaner extends ProcCleaner {
 
     @Override
     public void setup() {
-        username = getDescriptor().getUsername();  //TODO setup remotely in call() method, use different class loader?
         switchedOff = getDescriptor().isSwitchedOff();
     }
 
@@ -66,7 +64,7 @@ public class PsCleaner extends ProcCleaner {
         }
 
         try {
-            killer.kill(username, request.getListener().getLogger());
+            killer.kill(System.getProperty("user.name", ""), request.getListener().getLogger());
         } catch(IOException e) {
             e.printStackTrace();
             throw e;
@@ -88,10 +86,6 @@ public class PsCleaner extends ProcCleaner {
 
         public PsCleanerDescriptor() {
             load();
-        }
-
-        public String getUsername() {
-            return System.getProperty("user.name", "");
         }
 
         public boolean isSwitchedOff() {

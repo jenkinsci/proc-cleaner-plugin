@@ -35,7 +35,7 @@ public class PsBasedProcessTreeFactory {
 
         if (Functions.isWindows()) {
             return new PsBasedWinProcessTree();
-        } else if (ProcCleaner.getOsName().contains("hp-ux")) {
+        } else if (System.getProperty("os.name", "").toLowerCase().contains("hp-ux")) {
             return new PsBasedHPUXProcessTree();
         } else {
             return new PsBasedUnixProcessTree();

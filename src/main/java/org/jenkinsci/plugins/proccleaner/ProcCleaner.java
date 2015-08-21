@@ -23,7 +23,6 @@
  */
 package org.jenkinsci.plugins.proccleaner;
 
-import com.sun.jna.Platform;
 import hudson.DescriptorExtensionList;
 import hudson.ExtensionList;
 import hudson.ExtensionPoint;
@@ -37,7 +36,6 @@ import hudson.model.Computer;
 import hudson.model.Descriptor;
 import hudson.model.Executor;
 import hudson.model.Queue.Executable;
-import hudson.remoting.Callable;
 import hudson.remoting.VirtualChannel;
 
 import java.io.IOException;
@@ -46,9 +44,6 @@ import java.lang.management.ManagementFactory;
 
 import jenkins.model.Jenkins;
 import jenkins.security.MasterToSlaveCallable;
-import jenkins.security.Roles;
-
-import org.jenkinsci.remoting.RoleChecker;
 
 public abstract class ProcCleaner implements Describable<ProcCleaner>, ExtensionPoint, Serializable {
 
@@ -62,14 +57,6 @@ public abstract class ProcCleaner implements Describable<ProcCleaner>, Extension
         String jvmName = ManagementFactory.getRuntimeMXBean().getName();
         int index = jvmName.indexOf('@');
         return Integer.parseInt(jvmName.substring(0,index));
-    }
-
-    /**
-     *
-     * @return OS name with lowered cases
-     */
-    public static String getOsName() {
-        return System.getProperty("os.name", "").toLowerCase();
     }
 
     /**
@@ -173,11 +160,6 @@ public abstract class ProcCleaner implements Describable<ProcCleaner>, Extension
 
     public static DescriptorExtensionList<ProcCleaner,Descriptor<ProcCleaner>> getCleanerDescriptors() {
         return Jenkins.getInstance().<ProcCleaner,Descriptor<ProcCleaner>>getDescriptorList(ProcCleaner.class);
-    }
-
-    public static boolean isJnaSupported() {
-        return (Platform.isLinux() && Platform.isIntel()) || (Platform.isWindows() && Platform.isIntel())
-                || (Platform.isSolaris() && !(System.getProperty("os.version").compareTo("5.9") == 0)) ? true : false;
     }
 
     public static class ProcCleanerDescriptor extends Descriptor<ProcCleaner> {
