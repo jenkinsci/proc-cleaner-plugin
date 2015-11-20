@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Represents process tree obtain from ps utility.
@@ -69,8 +70,15 @@ public abstract class PsBasedProcessTree {
 
     public PsProcess createFromString(String psLine) {
         String[] ps = psLine.trim().split(" +", 3);
-        if(ps.length < 3)
+        if(ps.length < 3) {
+            LOGGER.fine("Unrecognized process item line! Was: '" + psLine + "'");
+            if(getLog() != null) {
+                getLog().println("DEBUG: Unrecognized process item line! Was: '"
+                        + psLine + "'");
+            }
+
             return null;
+        }
         return PsProcessFactory.createPsProcess(s2i(ps[0]), s2i(ps[1]), ps[2], PsBasedProcessTree.this);
     }
 
@@ -88,6 +96,8 @@ public abstract class PsBasedProcessTree {
 
     @CheckForNull
     public abstract PsBasedProcessTree createProcessTreeFor(String user) throws InterruptedException, IOException;
+
+    private static final Logger LOGGER = Logger.getLogger(PsBasedProcessTree.class.getName());
 
     /*
 

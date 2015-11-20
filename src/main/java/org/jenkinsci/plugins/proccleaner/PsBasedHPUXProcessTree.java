@@ -26,6 +26,7 @@ package org.jenkinsci.plugins.proccleaner;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.logging.Logger;
 
 /**
  * Author: pjanouse
@@ -36,24 +37,55 @@ public class PsBasedHPUXProcessTree extends PsBasedProcessTree {
     @Override
     public PsBasedProcessTree createProcessTreeFor(String user) throws InterruptedException, IOException {
         String[] cmd = {"ps","-u",user, "-f"};
-        BufferedReader reader;
         ProcessBuilder pb = new ProcessBuilder(cmd);
         pb.redirectErrorStream(true);
         Process proc = pb.start();
-        reader = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-        proc.waitFor();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+        if (proc.waitFor() != 0) {
+            LOGGER.warning("'ps' command invocation " + cmd + " failed!");
+            LOGGER.fine("Received output from 'ps' command invocation follows:");
+
+            if(getLog() != null) {
+                getLog().println("WARNING: 'ps' command invocation " + cmd + " failed!");
+                getLog().println("DEBUG: Received output from 'ps' command invocation follows:");
+            }
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                LOGGER.fine(line);
+                if(getLog() != null)
+                    getLog().println("DEBUG: '" + line + "'");
+            }
+        }
+
         PsBasedProcessTree ptree = new PsBasedHPUXProcessTree();
         String line = reader.readLine(); // first line should be "UID PID PPID C STIME TTY TIME COMMAND" - skip it
         if (!line.matches("^\\s*UID\\s*PID\\s*PPID\\s*C\\s*STIME\\s*TTY\\s*TIME\\s*COMMAND\\s*$")) {
+            LOGGER.fine("Unrecognized first output line from 'ps' command invocation! Was: '" + line + "'");
+            if(getLog() != null) {
+                getLog().println("DEBUG: Unrecognized first output line from 'ps' command invocation! Was: '"
+                        + line + "'");
+            }
+
             return null;
         }
         while ((line = reader.readLine()) != null) {
             String[] ps = line.trim().split(" +", 8);
-            if (ps.length < 8)
+            if (ps.length < 8) {
+                LOGGER.fine("Unrecognized output line from 'ps' command invocation! Was: '" + line + "'");
+                if(getLog() != null) {
+                    getLog().println("DEBUG: Unrecognized output line from 'ps' command invocation! Was '"
+                            + line + "'");
+                }
+
                 return null;
+            }
             ptree.addProcess(ps[1] + ' ' + ps[2] + ' ' + ps[7]);
         }
+        ptree.setLog(getLog());
         return ptree;
     }
+
+    private static final Logger LOGGER = Logger.getLogger(PsBasedHPUXProcessTree.class.getName());
 
 }

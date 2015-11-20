@@ -26,6 +26,7 @@ package org.jenkinsci.plugins.proccleaner;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.util.logging.Logger;
 
 /**
@@ -41,13 +42,37 @@ public class PsBasedUnixProcessTree extends PsBasedProcessTree {
         pb.redirectErrorStream(true);
         Process proc = pb.start();
         BufferedReader reader = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-        proc.waitFor();
+        if (proc.waitFor() != 0) {
+            LOGGER.warning("'ps' command invocation " + cmd + " failed!");
+            LOGGER.fine("Received output from 'ps' command invocation follows:");
+
+            if(getLog() != null) {
+                getLog().println("WARNING: 'ps' command invocation " + cmd + " failed!");
+                getLog().println("DEBUG: Received output from 'ps' command invocation follows:");
+            }
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                LOGGER.fine(line);
+                if(getLog() != null)
+                    getLog().println("DEBUG: '" + line + "'");
+            }
+        }
+
         PsBasedProcessTree ptree = new PsBasedUnixProcessTree();
         String line = reader.readLine(); // first line should be "PID  PPID COMMAND" - skip it
-        if(!line.matches("^\\s*PID\\s*PPID\\s*(COMMAND|ARGS)\\s*$"))
+        if(!line.matches("^\\s*PID\\s*PPID\\s*(COMMAND|ARGS)\\s*$")) {
+            LOGGER.fine("Unrecognized first output line from 'ps' command invocation! Was: '" + line + "'");
+            if(getLog() != null) {
+            getLog().println("DEBUG: Unrecognized first output line from 'ps' command invocation! Was: '"
+                    + line + "'");
+            }
             return null;
+        }
+
         while((line = reader.readLine()) != null)
             ptree.addProcess(line);
+        ptree.setLog(getLog());
         return ptree;
     }
 
