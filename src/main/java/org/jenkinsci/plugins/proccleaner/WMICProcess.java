@@ -63,7 +63,7 @@ public class WMICProcess {
             String s = stdin.readLine(); //skip first line - it's parentprocessid label
             StringBuffer sb = new StringBuffer();
             while((s = stdin.readLine()) != null){
-                sb.append(s);
+                sb.append(s+"\n");
                 if(!s.isEmpty()){
                     ppid = Integer.valueOf(s.trim());
                 }
@@ -92,7 +92,7 @@ public class WMICProcess {
             String s = stdin.readLine(); //skip first line - it's caption and commandline label
             StringBuffer sb = new StringBuffer();
             while((s = stdin.readLine()) != null){
-                 sb.append(s);
+                 sb.append(s+"\n");
                  args.append(s);
             }
             LOGGER.info("Output: \n" + sb.toString());
@@ -130,7 +130,7 @@ public class WMICProcess {
                 if(mpid.matches()){
                     int pid = Integer.valueOf(mpid.group(2));
                     while((s = stdin.readLine()) != null){
-                        sb.append(s);
+                        sb.append(s+"\n");
                         //search for ReturnValue line
                         if(!s.isEmpty()){
                             Matcher mret = RETVAL_PATTERN.matcher(s);
@@ -139,7 +139,7 @@ public class WMICProcess {
                                 if(retval == 0){
                                     //call getowner successfull completion
                                     while((s = stdin.readLine()) != null){
-                                        sb.append(s);
+                                        sb.append(s+"\n");
                                         //search for user line
                                         Matcher muser = USER_PATTERN.matcher(s);
                                         if(muser.matches() && user.equals(muser.group(2))){
