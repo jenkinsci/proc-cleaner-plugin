@@ -125,6 +125,7 @@ public class WMICProcess {
             String s;
             StringBuffer sb = new StringBuffer();
             while ((s = stdin.readLine()) != null) {
+                sb.append(s+"\n");
                 //search for pid line
                 Matcher mpid = PID_PATTERN.matcher(s);
                 if(mpid.matches()){
