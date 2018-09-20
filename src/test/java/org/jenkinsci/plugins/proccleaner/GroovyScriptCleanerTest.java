@@ -27,6 +27,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
 import hudson.model.Result;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.jvnet.hudson.test.Issue;
@@ -41,6 +42,7 @@ public class GroovyScriptCleanerTest {
 
     @Rule public JenkinsRule j = new JenkinsRule();
 
+    @Ignore
     @Test @Issue("SECURITY-489") @LocalData
     public void killGroovySupport() throws Exception {
         final String EXPECTED_MESSAGE = Messages.GroovyScriptCleaner_DisplayName();

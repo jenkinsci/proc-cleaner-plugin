@@ -27,6 +27,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,6 +36,8 @@ import java.util.regex.Pattern;
  * Date: 8/6/13
  */
 public class WMICProcess {
+
+    private static final Logger LOGGER = Logger.getLogger(WMICProcess.class.getName());
 
     private int pid;
     private int ppid;
@@ -51,17 +54,21 @@ public class WMICProcess {
         int ppid = -1;
         String cmd = "cmd.exe /c \"WMIC PROCESS where (processid=" + pid + ") get parentprocessid \"";
 
+        LOGGER.info("command: '" + cmd + "'");
         Process process = null;
         try {
             process = Runtime.getRuntime().exec(cmd);
             process.getOutputStream().close();
             BufferedReader stdin = new BufferedReader((new InputStreamReader(process.getInputStream())));
             String s = stdin.readLine(); //skip first line - it's parentprocessid label
+            StringBuffer sb = new StringBuffer();
             while((s = stdin.readLine()) != null){
+                sb.append(s);
                 if(!s.isEmpty()){
                     ppid = Integer.valueOf(s.trim());
                 }
             }
+            LOGGER.info("Output: \n" + sb.toString());
             stdin.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -76,15 +83,19 @@ public class WMICProcess {
         StringBuilder args = new StringBuilder();
         String cmd = "cmd.exe /c \"WMIC PROCESS where (processid=" + pid + ") get caption,commandline \"";
 
+        LOGGER.info("command: '" + cmd + "'");
         Process process = null;
         try {
             process = Runtime.getRuntime().exec(cmd);
             process.getOutputStream().close();
             BufferedReader stdin = new BufferedReader((new InputStreamReader(process.getInputStream())));
             String s = stdin.readLine(); //skip first line - it's caption and commandline label
+            StringBuffer sb = new StringBuffer();
             while((s = stdin.readLine()) != null){
+                 sb.append(s);
                  args.append(s);
             }
+            LOGGER.info("Output: \n" + sb.toString());
             stdin.close();
         }catch (Exception e){
             e.printStackTrace();
@@ -101,6 +112,7 @@ public class WMICProcess {
         ArrayList<Integer> uplist = new ArrayList<Integer>();
         String cmd = "cmd.exe /c \"WMIC PROCESS where (name like \"%exe%\") call getowner\"";
 
+        LOGGER.info("command: '" + cmd + "'");
         try {
             // Run Windows command
             Process process = Runtime.getRuntime().exec(cmd);
@@ -111,12 +123,14 @@ public class WMICProcess {
 
             // Read and parse command standard output
             String s;
+            StringBuffer sb = new StringBuffer();
             while ((s = stdin.readLine()) != null) {
                 //search for pid line
                 Matcher mpid = PID_PATTERN.matcher(s);
                 if(mpid.matches()){
                     int pid = Integer.valueOf(mpid.group(2));
                     while((s = stdin.readLine()) != null){
+                        sb.append(s);
                         //search for ReturnValue line
                         if(!s.isEmpty()){
                             Matcher mret = RETVAL_PATTERN.matcher(s);
@@ -125,6 +139,7 @@ public class WMICProcess {
                                 if(retval == 0){
                                     //call getowner successfull completion
                                     while((s = stdin.readLine()) != null){
+                                        sb.append(s);
                                         //search for user line
                                         Matcher muser = USER_PATTERN.matcher(s);
                                         if(muser.matches() && user.equals(muser.group(2))){
@@ -140,6 +155,8 @@ public class WMICProcess {
                     }
                 }
             }
+            LOGGER.info("Output: \n" + sb.toString());
+
 
         } catch (Exception e) {
             e.printStackTrace(System.err);
