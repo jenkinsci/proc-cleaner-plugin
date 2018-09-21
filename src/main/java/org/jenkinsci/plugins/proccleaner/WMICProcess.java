@@ -217,7 +217,7 @@ public class WMICProcess {
         return pid;
     }
 
-    public class WMICProcessException extends Exception {
+    public static class WMICProcessException extends Exception {
         
         private static final long serialVersionUID = 4810696271189726206L;
 
