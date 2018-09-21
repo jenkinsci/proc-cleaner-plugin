@@ -25,9 +25,11 @@ package org.jenkinsci.plugins.proccleaner;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -116,6 +118,27 @@ public class WMICProcess {
             sb.append("\t'"+n+"': '"+p.getProperty(n)+"'\n");
         }
         LOGGER.info("System properties:\n" + sb.toString());
+
+        String osName = System.getProperty( "os.name" ).toLowerCase();
+        String className = null;
+        String methodName = "getUsername";
+        if( osName.contains( "windows" ) ){
+            className = "com.sun.security.auth.module.NTSystem";
+            methodName = "getName";
+        }
+        else if( osName.contains( "linux" ) ){
+            className = "com.sun.security.auth.module.UnixSystem";
+        }
+        try {
+            if (className != null) {
+                Class<?> c = Class.forName(className);
+                Method method = c.getDeclaredMethod(methodName);
+                Object o = c.newInstance();
+                LOGGER.info("Logged user: '" + method.invoke(o) + "'");
+            }
+        } catch (Throwable e) {
+            LOGGER.log(Level.INFO, "Unexpected exception during call " + className + "." + methodName + "()", e);
+        }
 
         ArrayList<Integer> uplist = new ArrayList<Integer>();
         String cmd = "cmd.exe /c \"WMIC PROCESS where (name like \"%exe%\") call getowner\"";
