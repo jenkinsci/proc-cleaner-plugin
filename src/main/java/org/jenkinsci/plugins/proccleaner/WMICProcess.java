@@ -78,7 +78,7 @@ public class WMICProcess {
         return ppid;
     }
 
-    private String callForArgs(int pid) {
+    private static String callForArgs(int pid) {
 
         StringBuilder args = new StringBuilder();
         String cmd = "cmd.exe /c \"WMIC PROCESS where (processid=" + pid + ") get caption,commandline \"";
@@ -142,6 +142,7 @@ public class WMICProcess {
                                     //call getowner successfull completion
                                     while((s = stdin.readLine()) != null){
                                         sb.append(s+"\n");
+                                        LOGGER.info("PID: " + pid + " - " + callForArgs(pid));
                                         //search for user line
                                         Matcher muser = USER_PATTERN.matcher(s);
                                         if(muser.matches() && user.equals(muser.group(2))){
