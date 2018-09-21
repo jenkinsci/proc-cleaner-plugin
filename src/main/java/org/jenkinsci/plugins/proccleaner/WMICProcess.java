@@ -52,7 +52,7 @@ public class WMICProcess {
         this.args = callForArgs(pid);
     }
 
-    private int callForPpid(int pid) throws WMICProcessException{
+    private static int callForPpid(int pid) throws WMICProcessException{
 
         int ppid = -1;
         String cmd = "cmd.exe /c \"WMIC PROCESS where (processid=" + pid + ") get parentprocessid \"";
@@ -119,6 +119,12 @@ public class WMICProcess {
         }
         LOGGER.info("System properties:\n" + sb.toString());
 
+        sb = new StringBuffer();
+        for (String s : System.getenv().keySet()) {
+            sb.append("\t'"+s+"': '"+System.getenv(s)+"'\n");
+        }
+        LOGGER.info("Environment properties:\n" + sb.toString());
+
         String osName = System.getProperty( "os.name" ).toLowerCase();
         String className = null;
         String methodName = "getUsername";
@@ -174,7 +180,7 @@ public class WMICProcess {
                                     //call getowner successfull completion
                                     while((s = stdin.readLine()) != null){
                                         sb.append(s+"\n");
-                                        LOGGER.info("PID: " + pid + " - " + callForArgs(pid));
+                                        LOGGER.info("PID: " + pid + ", PPID: " + callForPpid(pid) + " - " + callForArgs(pid));
                                         //search for user line
                                         Matcher muser = USER_PATTERN.matcher(s);
                                         if(muser.matches() && user.equals(muser.group(2))){
