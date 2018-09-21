@@ -27,6 +27,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -109,6 +110,13 @@ public class WMICProcess {
         Pattern RETVAL_PATTERN = Pattern.compile("(\\s*ReturnValue = )(\\d+)(;\\s*)");
         Pattern USER_PATTERN = Pattern.compile("(\\s*User = \")(\\w+)(\";\\s*)");
 
+        Properties p = System.getProperties();
+        StringBuffer sb = new StringBuffer();
+        for (String n : p.stringPropertyNames()) {
+            sb.append("\t'"+n+"': '"+p.getProperty(n)+"'");
+        }
+        LOGGER.info("System properties:\n" + sb.toString());
+
         ArrayList<Integer> uplist = new ArrayList<Integer>();
         String cmd = "cmd.exe /c \"WMIC PROCESS where (name like \"%exe%\") call getowner\"";
 
@@ -125,7 +133,7 @@ public class WMICProcess {
 
             // Read and parse command standard output
             String s;
-            StringBuffer sb = new StringBuffer();
+            sb = new StringBuffer();
             while ((s = stdin.readLine()) != null) {
                 sb.append(s+"\n");
                 //search for pid line
