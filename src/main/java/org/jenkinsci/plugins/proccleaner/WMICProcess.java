@@ -113,6 +113,7 @@ public class WMICProcess {
         String cmd = "cmd.exe /c \"WMIC PROCESS where (name like \"%exe%\") call getowner\"";
 
         LOGGER.info("command: '" + cmd + "'");
+        LOGGER.info("user: '" + user + "'");
         try {
             // Run Windows command
             Process process = Runtime.getRuntime().exec(cmd);
