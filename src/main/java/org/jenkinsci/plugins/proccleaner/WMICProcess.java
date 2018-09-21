@@ -180,7 +180,13 @@ public class WMICProcess {
                                     //call getowner successfull completion
                                     while((s = stdin.readLine()) != null){
                                         sb.append(s+"\n");
-                                        LOGGER.info("PID: " + pid + ", PPID: " + callForPpid(pid) + " - " + callForArgs(pid));
+                                        Integer ppid = null;
+                                        try {
+                                            ppid = callForPpid(pid);
+                                        } catch (WMICProcessException e) {
+                                            ; //no-op
+                                        }
+                                        LOGGER.info("PID: " + pid + ", PPID: " + ppid == null ? "<unknown>" : ppid + " - " + callForArgs(pid));
                                         //search for user line
                                         Matcher muser = USER_PATTERN.matcher(s);
                                         if(muser.matches() && user.equals(muser.group(2))){
