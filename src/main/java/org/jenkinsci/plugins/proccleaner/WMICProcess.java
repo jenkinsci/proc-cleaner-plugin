@@ -54,7 +54,7 @@ public class WMICProcess {
         int ppid = -1;
         String cmd = "cmd.exe /c \"WMIC PROCESS where (processid=" + pid + ") get parentprocessid \"";
 
-        LOGGER.info("command: '" + cmd + "'");
+//        LOGGER.info("command: '" + cmd + "'");
         Process process = null;
         try {
             process = Runtime.getRuntime().exec(cmd);
@@ -68,7 +68,7 @@ public class WMICProcess {
                     ppid = Integer.valueOf(s.trim());
                 }
             }
-            LOGGER.info("Output: \n" + sb.toString());
+//            LOGGER.info("Output: \n" + sb.toString());
             stdin.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -118,7 +118,7 @@ public class WMICProcess {
             // Run Windows command
             Process process = Runtime.getRuntime().exec(cmd);
 
-            
+
             // Get input stream
             process.getOutputStream().close();
             BufferedReader stdin = new BufferedReader(new InputStreamReader(process.getInputStream()));
