@@ -118,6 +118,7 @@ public class WMICProcess {
             // Run Windows command
             Process process = Runtime.getRuntime().exec(cmd);
 
+            
             // Get input stream
             process.getOutputStream().close();
             BufferedReader stdin = new BufferedReader(new InputStreamReader(process.getInputStream()));
