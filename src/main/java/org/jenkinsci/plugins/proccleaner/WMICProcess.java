@@ -84,7 +84,7 @@ public class WMICProcess {
         StringBuilder args = new StringBuilder();
         String cmd = "cmd.exe /c \"WMIC PROCESS where (processid=" + pid + ") get caption,commandline \"";
 
-        LOGGER.info("command: '" + cmd + "'");
+//        LOGGER.info("command: '" + cmd + "'");
         Process process = null;
         try {
             process = Runtime.getRuntime().exec(cmd);
@@ -96,7 +96,7 @@ public class WMICProcess {
                  sb.append(s+"\n");
                  args.append(s);
             }
-            LOGGER.info("Output: \n" + sb.toString());
+//            LOGGER.info("Output: \n" + sb.toString());
             stdin.close();
         }catch (Exception e){
             e.printStackTrace();
@@ -113,7 +113,7 @@ public class WMICProcess {
         Properties p = System.getProperties();
         StringBuffer sb = new StringBuffer();
         for (String n : p.stringPropertyNames()) {
-            sb.append("\t'"+n+"': '"+p.getProperty(n)+"'");
+            sb.append("\t'"+n+"': '"+p.getProperty(n)+"'\n");
         }
         LOGGER.info("System properties:\n" + sb.toString());
 
