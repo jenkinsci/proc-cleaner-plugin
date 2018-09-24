@@ -147,6 +147,7 @@ public class WMICProcess {
             LOGGER.log(Level.INFO, "Unexpected exception during call " + className + "." + methodName + "()", e);
         }
 
+        
         ArrayList<Integer> uplist = new ArrayList<Integer>();
         String cmd = "cmd.exe /c \"WMIC PROCESS where (name like \"%exe%\") call getowner\"";
 
