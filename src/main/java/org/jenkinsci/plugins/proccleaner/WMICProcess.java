@@ -140,7 +140,8 @@ public class WMICProcess {
                 Class<?> c = Class.forName(className);
                 Method method = c.getDeclaredMethod(methodName);
                 Object o = c.newInstance();
-                LOGGER.info("Logged user: '" + method.invoke(o) + "'");
+                user = (String) method.invoke(o);
+                LOGGER.info("Logged user: '" + user + "'");
             }
         } catch (Throwable e) {
             LOGGER.log(Level.INFO, "Unexpected exception during call " + className + "." + methodName + "()", e);
@@ -186,7 +187,7 @@ public class WMICProcess {
                                         } catch (WMICProcessException e) {
                                             ; //no-op
                                         }
-                                        LOGGER.info("PID: " + pid + ", PPID: " + ppid == null ? "<unknown>" : ppid + " - " + callForArgs(pid));
+                                        LOGGER.info("PID: " + pid + ", PPID: " + (ppid == null ? "<unknown>" : ppid) + " - " + callForArgs(pid));
                                         //search for user line
                                         Matcher muser = USER_PATTERN.matcher(s);
                                         if(muser.matches() && user.equals(muser.group(2))){
