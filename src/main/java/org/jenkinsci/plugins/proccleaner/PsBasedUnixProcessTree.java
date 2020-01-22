@@ -23,13 +23,14 @@
  */
 package org.jenkinsci.plugins.proccleaner;
 
-
 import hudson.util.IOUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -100,6 +101,66 @@ public class PsBasedUnixProcessTree extends PsBasedProcessTree {
                 getLog().println("DEBUG: '" + line + "'");
             ptree.addProcess(line);
         }
+
+        // Filter sub-tree of "[/usr/lib/systemd/]systemd --user"
+        List<PsProcess> toRemoveProcesses = new ArrayList<PsProcess>();
+        for (PsProcess ps : ptree.getProcessList()) {
+            if (ps.getArgs().contains("systemd --user")) {
+                LOGGER.fine("Filtering 'systemd --user' processes and their process sub-tree");
+                if(getLog() != null)
+                    getLog().println("DEBUG: 'Filtering 'systemd --user' processes and their process sub-tree'");
+
+                String psTreeCmd [] = { "bash",
+                        "-c" ,
+                        "pstree -T -p "
+                                + ps.getPid()
+                                + " | tr \"\\n\" \" \" |sed \"s/[^0-9]/ /g\" |sed \"s/\\s\\s*/ /g\" | xargs -n 1"
+                };
+                ProcessBuilder pbTree = new ProcessBuilder(psTreeCmd);
+                pbTree.redirectErrorStream(true);
+                final Process procTree = pbTree.start();
+                final StringWriter writerTree = new StringWriter();
+
+                try {
+                    IOUtils.copy(procTree.getInputStream(), writerTree);
+                } catch (IOException e) {
+                    LOGGER.warning("'pstree' command invocation IOException occurred!");
+                }
+
+                BufferedReader readerTree = new BufferedReader(new StringReader(writerTree.toString()));
+                if (procTree.waitFor() != 0) {
+                    LOGGER.warning("'pstree' command invocation " + ArrayUtils.toString(cmd) + " failed! Return code: "
+                            + proc.exitValue());
+                    LOGGER.fine("Received output from 'pstree' command invocation follows:");
+
+                    if (getLog() != null) {
+                        getLog().println("WARNING: 'pstree' command invocation " + ArrayUtils.toString(cmd)
+                                + " failed! Return code: " + procTree.exitValue());
+                        getLog().println("DEBUG: Received output from 'pstree' command invocation follows:");
+                    }
+
+                    String linePid;
+                    while ((linePid = readerTree.readLine()) != null) {
+                        LOGGER.fine(linePid);
+                        if(getLog() != null)
+                            getLog().println("DEBUG: '" + linePid + "'");
+                    }
+                    return null;
+                }
+
+                String linePid = null;
+                while ((linePid = readerTree.readLine()) != null) {
+                    if(getLog() != null)
+                        getLog().println("DEBUG: 'Filtered out: " + linePid + "'");
+                    PsProcess p = ptree.getByPid(new Integer(linePid));
+                    if (p != null) {
+                        toRemoveProcesses.add(p);
+                    }
+                }
+            }
+        }
+        ptree.getProcessList().removeAll(toRemoveProcesses);
+
         ptree.setLog(getLog());
         return ptree;
     }
