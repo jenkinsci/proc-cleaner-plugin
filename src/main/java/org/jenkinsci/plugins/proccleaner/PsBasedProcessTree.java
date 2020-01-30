@@ -40,6 +40,7 @@ public abstract class PsBasedProcessTree {
 
     private List<PsProcess> processList;
     private PrintStream log;
+    private boolean systemProcessesFilterOff = false;
 
     public PsBasedProcessTree() {
         this.processList = new ArrayList<PsProcess>();
@@ -55,6 +56,14 @@ public abstract class PsBasedProcessTree {
 
     public void setLog(PrintStream log) {
         this.log = log;
+    }
+
+    public boolean isSystemProcessesFilterOff() {
+        return systemProcessesFilterOff;
+    }
+
+    public void setSystemProcessesFilterOff(boolean systemProcessesFilterOff) {
+        this.systemProcessesFilterOff = systemProcessesFilterOff;
     }
 
     public void addProcess(String psLine) {

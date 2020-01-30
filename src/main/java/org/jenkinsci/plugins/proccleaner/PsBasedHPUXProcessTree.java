@@ -31,6 +31,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -108,10 +110,35 @@ public class PsBasedHPUXProcessTree extends PsBasedProcessTree {
                 getLog().println("DEBUG: '" + line + "'");
             ptree.addProcess(ps[1] + ' ' + ps[2] + ' ' + ps[7]);
         }
+
+        if (!isSystemProcessesFilterOff()) {
+            LOGGER.fine("Filter system processes");
+            if (getLog() != null)
+                getLog().println("DEBUG: 'Filter system processes'");
+
+            List<PsProcess> toRemoveProcesses = new ArrayList<PsProcess>();
+            for (PsProcess ps: ptree.getProcessList()) {
+                if (blacklisted(ps)) {
+                    toRemoveProcesses.add(ps);
+                }
+            }
+            ptree.getProcessList().removeAll(toRemoveProcesses);
+        } // systemProcessesFilterOff is On
+
+        ptree.setSystemProcessesFilterOff(isSystemProcessesFilterOff());
         ptree.setLog(getLog());
         return ptree;
     }
 
-    private static final Logger LOGGER = Logger.getLogger(PsBasedHPUXProcessTree.class.getName());
+    // On HP-UX don't filter anything yet
+    private boolean blacklisted(PsProcess p){
+        // Filtered stuff should be placed here
+        // if (p.getArgs().contains("systemd --user")) {
+        //     return true;
+        // }
 
+        return false;
+    }
+
+    private static final Logger LOGGER = Logger.getLogger(PsBasedHPUXProcessTree.class.getName());
 }

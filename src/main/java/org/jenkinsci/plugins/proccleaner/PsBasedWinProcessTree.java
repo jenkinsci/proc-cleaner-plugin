@@ -24,7 +24,9 @@
 package org.jenkinsci.plugins.proccleaner;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Author: psrna
@@ -37,30 +39,50 @@ public class PsBasedWinProcessTree extends PsBasedProcessTree {
 
         List<Integer> upList = WMICProcess.getUserProcesses(user);
 
+        PsBasedProcessTree ptree = new PsBasedUnixProcessTree();
         for(int p : upList){
-
             try {
                 WMICProcess wmicp = new WMICProcess(p);
-                PsProcess psp = PsProcessFactory.createPsProcess(wmicp.getPid(), wmicp.getPpid(), wmicp.getArgs(), this);
-                if(!blacklisted(psp)) {
-                    getProcessList().add(psp);
-                }
+                ptree.getProcessList().add(
+                        PsProcessFactory.createPsProcess(wmicp.getPid(), wmicp.getPpid(), wmicp.getArgs(), this));
             } catch (WMICProcess.WMICProcessException e) {
                 //no instance for pid, don't add
             }
         }
-        return this;
+        if (!isSystemProcessesFilterOff()) {
+            LOGGER.fine("Filter system processes");
+            if (getLog() != null)
+                getLog().println("DEBUG: 'Filter system processes'");
+
+            List<PsProcess> toRemoveProcesses = new ArrayList<PsProcess>();
+            for (PsProcess ps: ptree.getProcessList()) {
+                if (blacklisted(ps)) {
+                    toRemoveProcesses.add(ps);
+                }
+            }
+            ptree.getProcessList().removeAll(toRemoveProcesses);
+        } // systemProcessesFilterOff is On
+
+        ptree.setSystemProcessesFilterOff(isSystemProcessesFilterOff());
+        ptree.setLog(getLog());
+        return ptree;
     }
 
+    // On MS Windows filter system stuff
     private boolean blacklisted(PsProcess p){
-
-        if(p.getArgs().contains("sshd"))
+        // Filtered stuff should be placed here
+        if (p.getArgs().contains("sshd")) {
             return true;
-        if(p.getArgs().contains("bash"))
+        }
+        if (p.getArgs().contains("bash")) {
             return true;
-        if(p.getArgs().contains("Explorer"))
+        }
+        if (p.getArgs().contains("Explorer")) {
             return true;
+        }
 
         return false;
     }
+
+    private static final Logger LOGGER = Logger.getLogger(PsBasedWinProcessTree.class.getName());
 }

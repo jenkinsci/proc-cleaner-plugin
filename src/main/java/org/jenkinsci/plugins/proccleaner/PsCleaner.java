@@ -45,6 +45,7 @@ public class PsCleaner extends ProcCleaner {
     private final String killerType;
     private final PsKiller killer;
     private boolean switchedOff;
+    private boolean systemProcessesFilterOff;
 
     @DataBoundConstructor
     public PsCleaner(String killerType) {
@@ -59,6 +60,7 @@ public class PsCleaner extends ProcCleaner {
     @Override
     public void setup() {
         switchedOff = getDescriptor().isSwitchedOff();
+        systemProcessesFilterOff = getDescriptor().isSystemProcessesFilterOff();
     }
 
     @Override
@@ -96,7 +98,7 @@ public class PsCleaner extends ProcCleaner {
             if (user == null) {
                 user = System.getProperty("user.name", "");
             }
-            killer.kill(user, request.getListener().getLogger());
+            killer.kill(user, request.getListener().getLogger(), systemProcessesFilterOff);
         } catch(IOException e) {
             e.printStackTrace();
             throw e;
@@ -116,12 +118,18 @@ public class PsCleaner extends ProcCleaner {
 
         private boolean switchedOff;
 
+        private boolean systemProcessesFilterOff;
+
         public PsCleanerDescriptor() {
             load();
         }
 
         public boolean isSwitchedOff() {
             return switchedOff;
+        }
+
+        public boolean isSystemProcessesFilterOff() {
+            return systemProcessesFilterOff;
         }
 
         @Override
@@ -132,6 +140,7 @@ public class PsCleaner extends ProcCleaner {
         @Override
         public boolean configure(StaplerRequest req, JSONObject json) {
             switchedOff = json.getBoolean("switchedOff");
+            systemProcessesFilterOff = json.getBoolean("systemProcessesFilterOff");
             save();
             return true;
         }
@@ -140,5 +149,8 @@ public class PsCleaner extends ProcCleaner {
             switchedOff = value;
         }
 
+        /*package*/ void setSystemProcessesFilterOff(boolean value) {
+            systemProcessesFilterOff = value;
+        }
     }
 }

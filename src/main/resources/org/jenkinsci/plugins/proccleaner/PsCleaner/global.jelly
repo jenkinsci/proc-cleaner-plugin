@@ -4,5 +4,8 @@
         <f:entry field="switchedOff" title="Switched off globally">
             <f:checkbox checked="${descriptor.switchedOff}" />
         </f:entry>
+        <f:entry field="systemProcessesFilterOff" title="Disable filtering system processes (and eventually their process sub-tree)">
+            <f:checkbox checked="${descriptor.systemProcessesFilterOff}" />
+        </f:entry>
     </f:section>
 </j:jelly>
