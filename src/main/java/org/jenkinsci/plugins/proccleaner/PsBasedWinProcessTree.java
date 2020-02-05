@@ -39,11 +39,10 @@ public class PsBasedWinProcessTree extends PsBasedProcessTree {
 
         List<Integer> upList = WMICProcess.getUserProcesses(user);
 
-        PsBasedProcessTree ptree = new PsBasedUnixProcessTree();
         for(int p : upList){
             try {
                 WMICProcess wmicp = new WMICProcess(p);
-                ptree.getProcessList().add(
+                getProcessList().add(
                         PsProcessFactory.createPsProcess(wmicp.getPid(), wmicp.getPpid(), wmicp.getArgs(), this));
             } catch (WMICProcess.WMICProcessException e) {
                 //no instance for pid, don't add
@@ -55,17 +54,17 @@ public class PsBasedWinProcessTree extends PsBasedProcessTree {
                 getLog().println("DEBUG: 'Filter system processes'");
 
             List<PsProcess> toRemoveProcesses = new ArrayList<PsProcess>();
-            for (PsProcess ps: ptree.getProcessList()) {
+            for (PsProcess ps: getProcessList()) {
                 if (blacklisted(ps)) {
+                    if (getLog() != null)
+                        getLog().println("DEBUG: 'Filtered out: " + ps + "'");
                     toRemoveProcesses.add(ps);
                 }
             }
-            ptree.getProcessList().removeAll(toRemoveProcesses);
+            getProcessList().removeAll(toRemoveProcesses);
         } // systemProcessesFilterOff is On
 
-        ptree.setSystemProcessesFilterOff(isSystemProcessesFilterOff());
-        ptree.setLog(getLog());
-        return ptree;
+        return this;
     }
 
     // On MS Windows filter system stuff
