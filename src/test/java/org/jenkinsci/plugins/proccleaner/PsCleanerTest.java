@@ -42,6 +42,7 @@ import jenkins.model.Jenkins;
 import org.apache.tools.ant.util.JavaEnvUtils;
 import org.jenkinsci.plugins.proccleaner.PsCleaner.PsCleanerDescriptor;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
@@ -172,7 +173,8 @@ public class PsCleanerTest {
         job.save(); // Should not fail
         postCleaner.done.signal();
     }
-
+    
+    @Ignore
     @Test public void performProcessCleanup() throws Exception {
 
         // Create and setup a job
