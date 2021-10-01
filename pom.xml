@@ -11,7 +11,7 @@
     <name>Process cleaner</name>
     <version>2.4-SNAPSHOT</version>
     <description>Kill running processes before and after build.</description>
-    <url>http://wiki.jenkins-ci.org/display/JENKINS/Process+Cleaner+Plugin</url>
+    <url>https://github.com/jenkinsci/proc-cleaner-plugin</url>
 
     <scm>
         <connection>scm:git:git://github.com/jenkinsci/proc-cleaner-plugin.git</connection>
