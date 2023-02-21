@@ -3,7 +3,7 @@
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>2.25</version>
+        <version>4.45</version>
     </parent>
 
     <artifactId>proc-cleaner-plugin</artifactId>
@@ -44,7 +44,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <surefire.useFile>false</surefire.useFile>
-        <jenkins.version>1.642</jenkins.version>
+        <jenkins.version>2.332.4</jenkins.version>
+        <java.level>11</java.level>
         <findbugs.failOnError>false</findbugs.failOnError>
         <concurrency>1C</concurrency>
     </properties>
@@ -95,7 +96,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.0.0</version>
+                <version>3.5.0</version>
                 <configuration>
                     <additionalOptions>
                         <option>-Xdoclint:all,-missing</option>
@@ -110,6 +111,22 @@
                         <arg>-Xlint:all</arg>
                     </compilerArgs>
                 </configuration>
+            </plugin>
+            <!-- Did not find a way to make enforcer work with com.github.olivergondza:maven-jdk-tools-wrapper in transitive dependencies -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>1.4.1</version>
+                <executions>
+                <execution>
+                    <id>enforce-bytecode-version</id>
+                    <phase>none</phase>
+                </execution>
+                <execution>
+                    <id>display-info</id>
+                    <phase>none</phase>
+                </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
