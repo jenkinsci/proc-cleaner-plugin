@@ -35,7 +35,7 @@ import org.jvnet.hudson.test.recipes.LocalData;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class GroovyScriptCleanerTest {
 
@@ -53,6 +53,7 @@ public class GroovyScriptCleanerTest {
 
         HtmlPage page = j.createWebClient().getPage(a, "configure");
         String resp = page.getWebResponse().getContentAsString();
+        
         assertThat(resp, containsString(EXPECTED_MESSAGE));
         assertThat(resp, containsString("println 'precleaner'; return 'precleaned!'"));
         assertThat(resp, containsString("println 'postcleaner'; return 'postcleaned!'"));

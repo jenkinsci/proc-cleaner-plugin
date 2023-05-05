@@ -1,16 +1,28 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.jenkins.tools.bom</groupId>
+                <artifactId>bom-2.387.x</artifactId>
+                <version>1945.v13a_1306588ff</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>4.45</version>
+        <version>4.55</version>
     </parent>
 
     <artifactId>proc-cleaner-plugin</artifactId>
     <packaging>hpi</packaging>
     <name>Process cleaner</name>
     <version>2.5-SNAPSHOT</version>
-    <description>Kill running processes before and after build.</description>
     <url>https://github.com/jenkinsci/proc-cleaner-plugin</url>
 
     <scm>
@@ -44,8 +56,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <surefire.useFile>false</surefire.useFile>
-        <jenkins.version>2.332.4</jenkins.version>
-        <java.level>11</java.level>
+        <jenkins.version>2.387.1</jenkins.version>
         <findbugs.failOnError>false</findbugs.failOnError>
         <concurrency>1C</concurrency>
     </properties>
@@ -54,25 +65,21 @@
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-core</artifactId>
-            <version>1.3</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>1.8.5</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
             <artifactId>matrix-project</artifactId>
-            <version>1.4.1</version>
         </dependency>
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
             <artifactId>junit</artifactId>
-            <version>1.9</version>
         </dependency>
 
         <dependency>
@@ -81,52 +88,15 @@
             <version>1.3.9-1</version>
         </dependency>
     </dependencies>
-
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.jenkins-ci.tools</groupId>
-                <artifactId>maven-hpi-plugin</artifactId>
-                <extensions>true</extensions>
-                <configuration>
-                    <!-- Removal of Groovy killer -->
-                    <compatibleSinceVersion>2.0</compatibleSinceVersion>
-                </configuration>
-            </plugin>
+            <!-- Do not deploy anything except for the plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.5.0</version>
+                <artifactId>maven-deploy-plugin</artifactId>
                 <configuration>
-                    <additionalOptions>
-                        <option>-Xdoclint:all,-missing</option>
-                    </additionalOptions>
+                    <skip>true</skip>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <compilerArgs>
-                        <arg>-Xlint:all</arg>
-                    </compilerArgs>
-                </configuration>
-            </plugin>
-            <!-- Did not find a way to make enforcer work with com.github.olivergondza:maven-jdk-tools-wrapper in transitive dependencies -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-enforcer-plugin</artifactId>
-                <version>1.4.1</version>
-                <executions>
-                <execution>
-                    <id>enforce-bytecode-version</id>
-                    <phase>none</phase>
-                </execution>
-                <execution>
-                    <id>display-info</id>
-                    <phase>none</phase>
-                </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
