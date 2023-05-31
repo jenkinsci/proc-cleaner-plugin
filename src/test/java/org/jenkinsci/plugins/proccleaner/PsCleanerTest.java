@@ -50,13 +50,15 @@ import org.jvnet.hudson.test.TestBuilder;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.logging.Logger;
 
 import static org.jenkinsci.plugins.proccleaner.Util.getLogAsString;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -71,7 +73,9 @@ public class PsCleanerTest {
 
     @Before public void setUp() {
         preCleaner = mock(PsCleaner.class, withSettings().serializable());
+        doCallRealMethod().when(preCleaner).performCleanup(any(), any(), any());
         postCleaner = mock(PsCleaner.class, withSettings().serializable());
+        doCallRealMethod().when(postCleaner).performCleanup(any(), any(), any());
     }
 
     @Test public void skipWhenGloballyTurnedOff() throws Exception {
@@ -173,7 +177,7 @@ public class PsCleanerTest {
         job.save(); // Should not fail
         postCleaner.done.signal();
     }
-    
+
     @Ignore
     @Test public void performProcessCleanup() throws Exception {
 
@@ -226,7 +230,7 @@ public class PsCleanerTest {
 
         @Override
         public PsCleanerDescriptor getDescriptor() {
-            return (PsCleanerDescriptor) Jenkins.getInstance().getDescriptor(PsCleaner.class);
+            return (PsCleanerDescriptor) Jenkins.get().getDescriptor(PsCleaner.class);
         }
 
         @Override
@@ -262,7 +266,7 @@ public class PsCleanerTest {
                 }
 
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
-                final StreamTaskListener stlistener = new StreamTaskListener(out);
+                final StreamTaskListener stlistener = new StreamTaskListener(out, Charset.defaultCharset());
                 p[0] = new Launcher.LocalLauncher(stlistener)
                         .launch()
                         .stderr(System.err)
