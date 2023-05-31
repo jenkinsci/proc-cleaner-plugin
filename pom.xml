@@ -90,7 +90,16 @@
         </dependency>
     </dependencies>
     <build>
-        <plugins>
+       <plugins>
+            <plugin>
+                <groupId>org.jenkins-ci.tools</groupId>
+                <artifactId>maven-hpi-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <!-- Removal of Groovy killer -->
+                    <compatibleSinceVersion>2.0</compatibleSinceVersion>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
@@ -101,7 +110,6 @@
                     </additionalOptions>
                 </configuration>
             </plugin>
-            <!-- Do not deploy anything except for the plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -109,7 +117,6 @@
                     <compilerArgs>
                         <arg>-Xlint:all</arg>
                     </compilerArgs>
-                    <skip>true</skip>
                 </configuration>
             </plugin>
         </plugins>
