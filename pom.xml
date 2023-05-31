@@ -38,7 +38,7 @@
             <url>https://repo.jenkins-ci.org/releases</url>
         </repository>
     </distributionManagement>
-    
+
     <repositories>
         <repository>
             <id>repo.jenkins-ci.org</id>
@@ -59,6 +59,8 @@
         <jenkins.version>2.387.1</jenkins.version>
         <findbugs.failOnError>false</findbugs.failOnError>
         <concurrency>1C</concurrency>
+        <!-- Surefire option to open modules for reflection that is needed to serialize mocks -->
+        <argLine>--add-opens java.base/java.util.concurrent=ALL-UNNAMED --add-opens java.base/java.util.concurrent.locks=ALL-UNNAMED</argLine>
     </properties>
 
     <dependencies>
