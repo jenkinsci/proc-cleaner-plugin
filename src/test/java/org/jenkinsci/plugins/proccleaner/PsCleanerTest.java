@@ -50,13 +50,14 @@ import org.jvnet.hudson.test.TestBuilder;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.logging.Logger;
 
 import static org.jenkinsci.plugins.proccleaner.Util.getLogAsString;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -226,7 +227,7 @@ public class PsCleanerTest {
 
         @Override
         public PsCleanerDescriptor getDescriptor() {
-            return (PsCleanerDescriptor) Jenkins.getInstance().getDescriptor(PsCleaner.class);
+            return (PsCleanerDescriptor) Jenkins.get().getDescriptor(PsCleaner.class);
         }
 
         @Override
@@ -262,7 +263,7 @@ public class PsCleanerTest {
                 }
 
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
-                final StreamTaskListener stlistener = new StreamTaskListener(out);
+                final StreamTaskListener stlistener = new StreamTaskListener(out, Charset.defaultCharset());
                 p[0] = new Launcher.LocalLauncher(stlistener)
                         .launch()
                         .stderr(System.err)
