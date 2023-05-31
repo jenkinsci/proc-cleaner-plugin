@@ -88,7 +88,9 @@ public abstract class ProcCleaner implements Describable<ProcCleaner>, Extension
         setup();
         VirtualChannel c = launcher.getChannel();
         try {
-            c.call(new CleanRequest(this, listener));
+            if (c != null) {
+                c.call(new CleanRequest(this, listener));
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
