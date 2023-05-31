@@ -58,6 +58,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -72,7 +73,9 @@ public class PsCleanerTest {
 
     @Before public void setUp() {
         preCleaner = mock(PsCleaner.class, withSettings().serializable());
+        doCallRealMethod().when(preCleaner).performCleanup(any(), any(), any());
         postCleaner = mock(PsCleaner.class, withSettings().serializable());
+        doCallRealMethod().when(postCleaner).performCleanup(any(), any(), any());
     }
 
     @Test public void skipWhenGloballyTurnedOff() throws Exception {
@@ -174,7 +177,7 @@ public class PsCleanerTest {
         job.save(); // Should not fail
         postCleaner.done.signal();
     }
-    
+
     @Ignore
     @Test public void performProcessCleanup() throws Exception {
 
